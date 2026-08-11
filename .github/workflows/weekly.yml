@@ -1,0 +1,26 @@
+name: weekly
+on:
+  schedule:
+    - cron: "0 3 * * 1" # 每週一 03:00 UTC（台灣時間 11:00）
+  workflow_dispatch: {}
+
+jobs:
+  ping-supabase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 讀一筆 news 保持 Supabase 專案活躍
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" \
+            "$SUPABASE_URL/rest/v1/news?select=id&limit=1" \
+            -H "apikey: $SUPABASE_ANON_KEY")
+          echo "HTTP $code"
+          test "$code" = "200"
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+
+  rebuild-site:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 觸發 Cloudflare Pages 重建（更新影片牆）
+        run: curl -s -X POST "${{ secrets.CF_PAGES_DEPLOY_HOOK_URL }}"
