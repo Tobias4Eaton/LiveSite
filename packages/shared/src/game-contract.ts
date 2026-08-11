@@ -11,7 +11,7 @@ export const gameSnapshotSchema = z.object({
   gameType: z.string(),
   sessionId: z.string(),
   phase: z.enum(["idle", "open", "running", "ended"]),
-  startedAt: z.string(),
+  startedAt: z.iso.datetime(),
   payload: z.record(z.string(), z.unknown()),
 });
 export type GameSnapshot = z.infer<typeof gameSnapshotSchema>;
@@ -19,7 +19,7 @@ export type GameSnapshot = z.infer<typeof gameSnapshotSchema>;
 /** 單次遊戲事件：機器人 → 網站/覆蓋層 */
 export const gameEventSchema = z.object({
   type: z.string(),
-  at: z.string(),
+  at: z.iso.datetime(),
   data: z.record(z.string(), z.unknown()),
 });
 export type GameEvent = z.infer<typeof gameEventSchema>;

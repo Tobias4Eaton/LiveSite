@@ -10,6 +10,7 @@ create table if not exists public.news (
 alter table public.news enable row level security;
 
 -- 僅開放公開讀取；不建立任何 insert/update/delete policy（後台走 service role）。
+drop policy if exists "news_public_read" on public.news;
 create policy "news_public_read"
   on public.news for select
   using (true);

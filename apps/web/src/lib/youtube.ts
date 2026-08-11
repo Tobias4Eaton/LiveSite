@@ -19,14 +19,14 @@ interface FeedEntry {
 }
 
 export function parseYouTubeFeed(xml: string): YouTubeVideo[] {
-  const doc = new XMLParser().parse(xml) as {
+  const doc = new XMLParser({ parseTagValue: false }).parse(xml) as {
     feed?: { entry?: FeedEntry | FeedEntry[] };
   };
   const raw = doc.feed?.entry ?? [];
   const entries = Array.isArray(raw) ? raw : [raw];
   return entries.map((e) => ({
     id: e["yt:videoId"],
-    title: String(e.title),
+    title: e.title,
     publishedAt: e.published,
     thumbnailUrl: `https://i.ytimg.com/vi/${e["yt:videoId"]}/hqdefault.jpg`,
     url: `https://www.youtube.com/watch?v=${e["yt:videoId"]}`,

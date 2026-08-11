@@ -1,7 +1,7 @@
 name: weekly
 on:
   schedule:
-    - cron: "0 3 * * 1" # 每週一 03:00 UTC（台灣時間 11:00）
+    - cron: "0 3 * * 1,4" # 每週一、四 03:00 UTC（台灣時間 11:00）
   workflow_dispatch: {}
 
 jobs:
@@ -23,4 +23,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 觸發 Cloudflare Pages 重建（更新影片牆）
-        run: curl -s -X POST "${{ secrets.CF_PAGES_DEPLOY_HOOK_URL }}"
+        run: curl -fsS -X POST "${{ secrets.CF_PAGES_DEPLOY_HOOK_URL }}"

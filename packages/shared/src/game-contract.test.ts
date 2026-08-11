@@ -36,6 +36,17 @@ describe("gameSnapshotSchema", () => {
     };
     expect(() => gameSnapshotSchema.parse(bad)).toThrow();
   });
+
+  it("拒絕非 ISO 格式的 startedAt", () => {
+    const bad = {
+      gameType: "bet",
+      sessionId: "s-001",
+      phase: "open",
+      startedAt: "yesterday",
+      payload: {},
+    };
+    expect(() => gameSnapshotSchema.parse(bad)).toThrow();
+  });
 });
 
 describe("gameEventSchema", () => {

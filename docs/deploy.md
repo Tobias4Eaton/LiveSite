@@ -12,6 +12,7 @@
 3. 環境變數（Settings → Environment variables，Production 與 Preview 都設）：
    - `PUBLIC_SUPABASE_URL`
    - `PUBLIC_SUPABASE_ANON_KEY`
+   - `NODE_VERSION=22`（與根 package.json 的 engines 要求一致，避免建置映像使用過舊 Node）
 4. 部署完成後，把分配到的網域（`xxx.pages.dev`，之後有自訂網域也一併）
    加進 `apps/web/src/config/site.ts` 的 `embedParents`，否則 Twitch 播放器黑畫面。
 5. Settings → Builds & deployments → Deploy hooks → 建一個 hook，
@@ -32,7 +33,10 @@
 
 ## 例行維護
 
-`.github/workflows/weekly.yml` 每週一自動：
+`.github/workflows/weekly.yml` 每週一、四自動：
 1. 讀取一次資料庫，避免免費層專案因閒置一週被暫停。
 2. 觸發 Pages 重建，讓影片牆抓到最新 YouTube 影片。
 （也可在 Actions 頁面手動觸發 `weekly`。）
+
+注意：GitHub 若倉庫超過 60 天沒有任何 commit，會自動停用排程中的 workflow，
+需到 Actions 頁面手動重新啟用 weekly workflow。
