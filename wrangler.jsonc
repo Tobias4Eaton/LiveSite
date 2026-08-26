@@ -1,0 +1,8 @@
+// Cloudflare Workers 部署設定（純靜態資產，無 server 端程式）
+{
+  "name": "livesite",
+  "compatibility_date": "2026-08-26",
+  "assets": {
+    "directory": "./apps/web/dist"
+  }
+}

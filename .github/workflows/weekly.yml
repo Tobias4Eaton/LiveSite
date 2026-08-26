@@ -19,8 +19,25 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
 
+  # Workers Builds 沒有 Pages 的 Deploy Hook，改由 Actions 自行建置後用 wrangler 部署
   rebuild-site:
     runs-on: ubuntu-latest
     steps:
-      - name: 觸發 Cloudflare Pages 重建（更新影片牆）
-        run: curl -fsS -X POST "${{ secrets.CF_PAGES_DEPLOY_HOOK_URL }}"
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: 重新建置網站（更新影片牆）
+        run: pnpm --filter web build
+        env:
+          PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      - name: 部署到 Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy
